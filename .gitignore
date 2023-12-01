@@ -1,2 +1,3 @@
-./protocol.dat*
-./venv/
+protocol.dat*
+venv
+.idea
