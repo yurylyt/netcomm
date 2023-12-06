@@ -2,18 +2,18 @@ from utils import bernoulli_trial
 
 
 class HashWrapper:
-    def __init__(self, hash_obj):
-        self._hash = hash_obj
+    """
+    Uses explicit property definition instead of __getattr__/__setattr__ approach for performance reasons
 
-    def __getattr__(self, item):
-        return self._hash[item]
+    """
+    def __init__(self, data):
+        self._data = data
 
-    def __setattr__(self, key, value):
-        if key == "_hash":
-            # This allows the initial dictionary to be set
-            super().__setattr__(key, value)
-        else:
-            self._hash[key] = value
+    def _get(self, item):
+        return self._data[item]
+
+    def _set(self, key, value):
+        self._data[key] = value
 
 
 class Actor(HashWrapper):
@@ -24,6 +24,38 @@ class Actor(HashWrapper):
         super().__init__(data)
         self.node = node
 
+    @property
+    def rho(self):
+        return self._data['rho']
+
+    @rho.setter
+    def rho(self, value):
+        self._data['rho'] = value
+
+    @property
+    def choice(self):
+        return self._get('choice')
+
+    @choice.setter
+    def choice(self, value):
+        self._set('choice', value)
+
+
+    @property
+    def result_list(self):
+        return self._data['result_list']
+
+    @result_list.setter
+    def result_list(self, value):
+        self._data['result_list'] = value
+
+    @property
+    def w(self):
+        return self._get('w')
+
+    @w.setter
+    def w(self, value):
+        self._set('w', value)
 
 class Channel(HashWrapper):
     """
@@ -36,3 +68,19 @@ class Channel(HashWrapper):
 
     def is_active(self):
         return bernoulli_trial(self.a)
+
+    @property
+    def D(self):
+        return self._get('D')
+
+    @D.setter
+    def D(self, value):
+        self._set('D', value)
+
+    @property
+    def a(self):
+        return self._get('a')
+
+    @a.setter
+    def a(self, value):
+        self._set('a', value)

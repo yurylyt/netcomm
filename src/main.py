@@ -3,9 +3,9 @@ from protocol import Protocol
 import time
 from session import Session
 
-NITER = 10  # Number of iterations
+NITER = 100  # Number of iterations
 
-netcomm = Community(200)
+netcomm = Community(200, nvars=3)
 protocol = Protocol(netcomm)
 start_time_total = time.time()
 

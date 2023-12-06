@@ -10,9 +10,9 @@ class Session:
 
     def __init__(self, community):
         self.community = community
-        self._results = [[] for _ in range(self.community.size)]
 
     def _simulate_dialog(self, D, wA, wB):
+        # clean auxiliary information
         nvars = self.community.nvars
         # get dialogue matrix of the current dialogue and
         # the preference densities of its participants
@@ -25,6 +25,8 @@ class Session:
 
     def simulate(self):
         start_time = time.time()
+        for actor in self.community.actors():
+            actor.result_list[:] = []
 
         # simulate session dialogues
         for channel in self.community.channels():
@@ -37,14 +39,15 @@ class Session:
         print(f"Dialog: {dialog_time - start_time}, Compute: {compute_time - dialog_time}")
 
     def _compute_results(self):
-        for i, result in enumerate(self._results):
-            if result:
+        for actor in self.community.actors():
+            result_list = actor.result_list
+            if result_list:
                 # actor 'n' participates at least in one dialogue
-                ndialogues = len(result)
+                ndialogues = len(result_list)
                 w = np.zeros(self.community.nvars)
-                for wc in result:
+                for wc in result_list:
                     np.add(w, wc, w)
-                np.multiply(w, 1.0 / ndialogues, self.community.actor(i).w)
+                np.multiply(w, 1.0 / ndialogues, actor.w)
 
     def _activate_channel(self, channel):
         if channel.is_active():
@@ -55,5 +58,5 @@ class Session:
             bob = self.community.actor(bob_idx)
             # ------------------------------------------------------
             wA, wB = self._simulate_dialog(channel.D, alice.w, bob.w)
-            self._results[channel.actor1].append(wA)
-            self._results[channel.actor2].append(wB)
+            alice.result_list.append(wA)
+            bob.result_list.append(wB)

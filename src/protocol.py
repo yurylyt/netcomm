@@ -1,3 +1,4 @@
+from community import Community
 from utils import *
 from dataclasses import dataclass
 
@@ -7,7 +8,7 @@ class Protocol:
     Community observation protocol
     """
 
-    def __init__(self, community):
+    def __init__(self, community: Community):
         self._community = community
         self._protocol = []
         self.observe()

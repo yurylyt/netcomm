@@ -1,3 +1,5 @@
+from typing import Generator
+
 import networkx as nx
 
 from wrappers import Actor, Channel
@@ -7,6 +9,7 @@ from utils import *
 class Community:
     """
     Base class representing a community
+    nvars and w depend on each other
     """
     def __init__(self, network_size, nvars=2, rho=20):
         rg = np.random.default_rng()
@@ -21,6 +24,7 @@ class Community:
             actor = Actor(node, data)
             actor.rho = rho
             actor.choice = 0 if actor.node == 0 else DISCLAIMER
+            actor.result_list = []
             data['actor'] = Actor(node, data)
 
         # set parameters of community channels
@@ -49,14 +53,14 @@ class Community:
             else:
                 actor.w = uncertainty(self.nvars)
 
-    def actors(self):
+    def actors(self) -> Generator[Actor, None, None]:
         for node, data in self._net.nodes(data=True):
             yield data['actor']
 
-    def actor(self, node):
+    def actor(self, node) -> Actor:
         return self._net.nodes[node]['actor']
 
-    def channels(self):
+    def channels(self) -> Generator[Channel, None, None]:
         for a, b, data in self._net.edges(data=True):
             yield data['channel']
 
