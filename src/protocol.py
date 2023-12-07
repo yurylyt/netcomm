@@ -1,6 +1,15 @@
+from numpy import ndarray
+
 from community import Community
 from utils import *
 from dataclasses import dataclass
+
+
+@dataclass
+class ProtocolEntry:
+    W: ndarray
+    DP: float
+    WP: list
 
 
 class Protocol:
@@ -16,9 +25,12 @@ class Protocol:
     def observe(self):
         self._protocol.append(self._observe())
 
-    def _observe(self):
+    def _observe(self) -> ProtocolEntry:
         # polling simulation
         netcomm = self._community
+
+        # It def belongs here as it's actually a "poll", hence there's some probability of different answers
+        # based on preference density.
         for actor in netcomm.actors():
             hn = h(actor.w)
             if bernoulli_trial(np.power(hn, actor.rho)):
@@ -37,21 +49,18 @@ class Protocol:
         DP = len([1 for a in netcomm.actors() if a.choice == DISCLAIMER])
         if DP == number_of_nodes:
             # all community actors disclaimed a choice
-            return W, 1.0, uncertainty(netcomm.nvars)
+            return ProtocolEntry(W, 1.0, uncertainty(netcomm.nvars))
         NP = number_of_nodes - DP
         WP = netcomm.nvars * [None]
         for v in range(netcomm.nvars):
             WP[v] = len([1 for a in netcomm.actors() if a.choice == v])
             WP[v] /= NP
         DP /= number_of_nodes
-        return self.ProtocolEntry(W, DP, WP)
+        return ProtocolEntry(W, DP, WP)
 
     def data(self):
         return self._protocol
 
-    @dataclass
-    class ProtocolEntry:
-        W: list
-        DP: float
-        WP: list
+
+
 

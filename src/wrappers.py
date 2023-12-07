@@ -1,3 +1,5 @@
+import array
+
 from utils import bernoulli_trial
 
 
@@ -34,6 +36,11 @@ class Actor(HashWrapper):
 
     @property
     def choice(self):
+        """
+        actor's current choice. SHould be moved as a local variable to Observer.
+        However, need to consider the initial choice (
+        :return:
+        """
         return self._get('choice')
 
     @choice.setter
@@ -50,11 +57,14 @@ class Actor(HashWrapper):
         self._data['result_list'] = value
 
     @property
-    def w(self):
+    def w(self) -> array:
+        """
+        Actor's preference density. Array size corresponds to the nvars
+        """
         return self._get('w')
 
     @w.setter
-    def w(self, value):
+    def w(self, value: array):
         self._set('w', value)
 
 class Channel(HashWrapper):
@@ -71,6 +81,9 @@ class Channel(HashWrapper):
 
     @property
     def D(self):
+        """
+        :return: channel's dialog matrix
+        """
         return self._get('D')
 
     @D.setter
@@ -79,6 +92,9 @@ class Channel(HashWrapper):
 
     @property
     def a(self):
+        """
+        :return: channel activation probability
+        """
         return self._get('a')
 
     @a.setter

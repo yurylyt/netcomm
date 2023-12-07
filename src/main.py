@@ -5,7 +5,7 @@ from session import Session
 
 NITER = 100  # Number of iterations
 
-netcomm = Community(200, nvars=3)
+netcomm = Community(200)
 protocol = Protocol(netcomm)
 start_time_total = time.time()
 
