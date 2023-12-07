@@ -46,16 +46,14 @@ class Session:
                 w = np.zeros(self.community.nvars)
                 for wc in result_list:
                     np.add(w, wc, w)
-                np.multiply(w, 1.0 / ndialogues, actor.w)
+                np.multiply(w, 1.0 / ndialogues, actor.preference)
 
     def _activate_channel(self, channel):
         if channel.is_active():
             # determine actors participating as Alice and Bob in the
             # current dialogue
-            alice_idx, bob_idx = channel.actor1, channel.actor2
-            alice = self.community.actor(alice_idx)
-            bob = self.community.actor(bob_idx)
+            alice, bob = channel.actor1, channel.actor2
             # ------------------------------------------------------
-            wA, wB = self._simulate_dialog(channel.D, alice.w, bob.w)
+            wA, wB = self._simulate_dialog(channel.dialog_matrix, alice.preference, bob.preference)
             alice.result_list.append(wA)
             bob.result_list.append(wB)

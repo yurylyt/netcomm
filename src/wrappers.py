@@ -22,9 +22,10 @@ class Actor(HashWrapper):
     """
     Decorator over a networkx graph node
     """
-    def __init__(self, node, data):
+    def __init__(self, node: int, data):
         super().__init__(data)
         self.node = node
+        self.result_list = []
 
     @property
     def rho(self):
@@ -37,8 +38,8 @@ class Actor(HashWrapper):
     @property
     def choice(self):
         """
-        actor's current choice. SHould be moved as a local variable to Observer.
-        However, need to consider the initial choice (
+        actor's current choice. Should be moved as a local variable to Observer.
+        However, need to consider the initial choice for 'alice' aka leader
         :return:
         """
         return self._get('choice')
@@ -47,6 +48,29 @@ class Actor(HashWrapper):
     def choice(self, value):
         self._set('choice', value)
 
+    @property
+    def confidence(self):
+        """
+        Probability that actor will preserve their choice.
+        """
+        return self._get('confidence')
+
+    @confidence.setter
+    def confidence(self, value):
+        self._set('confidence', value)
+
+    @property
+    def dialog_chance(self):
+        """
+        Probability that actor will engage in a dialog.
+        <br/>
+        Defines channel activation probability if the actor is the first in a channel actors pair
+        """
+        return self._get('dialog_chance')
+
+    @dialog_chance.setter
+    def dialog_chance(self, value):
+        self._set('dialog_chance', value)
 
     @property
     def result_list(self):
@@ -57,46 +81,47 @@ class Actor(HashWrapper):
         self._data['result_list'] = value
 
     @property
-    def w(self) -> array:
+    def preference(self) -> array:
         """
-        Actor's preference density. Array size corresponds to the nvars
+        Actor's preference density. Array size corresponds to the nvars.
+        Represented as 'w' in the article
         """
         return self._get('w')
 
-    @w.setter
-    def w(self, value: array):
+    @preference.setter
+    def preference(self, value: array):
         self._set('w', value)
 
 class Channel(HashWrapper):
     """
     Decorator for a networkx graph edge. Syntax sugar really
     """
-    def __init__(self, actor1, actor2, data):
+    def __init__(self, actor1: Actor, actor2: Actor, data):
         super().__init__(data)
         self.actor1 = actor1
         self.actor2 = actor2
 
     def is_active(self):
-        return bernoulli_trial(self.a)
+        return bernoulli_trial(self.activation)
 
     @property
-    def D(self):
+    def dialog_matrix(self):
         """
-        :return: channel's dialog matrix
+        Channel's dialog matrix. Represented as D in the article
         """
         return self._get('D')
 
-    @D.setter
-    def D(self, value):
+    @dialog_matrix.setter
+    def dialog_matrix(self, value):
         self._set('D', value)
 
     @property
-    def a(self):
+    def activation(self):
         """
-        :return: channel activation probability
+        Channel activation probability.
         """
         return self._get('a')
 
-    @a.setter
-    def a(self, value):
+    @activation.setter
+    def activation(self, value):
         self._set('a', value)

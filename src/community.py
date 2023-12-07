@@ -11,6 +11,7 @@ class Community:
     Base class representing a community
     nvars and w depend on each other
     """
+
     def __init__(self, network_size, nvars=2, rho=20):
         rg = np.random.default_rng()
         net = nx.complete_graph(network_size)
@@ -19,39 +20,33 @@ class Community:
         self.nvars = nvars
         self.size = network_size
 
-        # set parameters of community actors
+        # set default parameters of community actors
         for node, data in net.nodes(data=True):
             actor = Actor(node, data)
             actor.rho = rho
-            actor.choice = 0 if actor.node == 0 else DISCLAIMER
-            actor.result_list = []
+            actor.choice = DISCLAIMER
+            actor.confidence = rg.uniform(low=0.2, high=0.6)
+            actor.dialog_chance = 1.0
+            actor.preference = uncertainty(self.nvars)
             data['actor'] = Actor(node, data)
+
+        # define a leader
+        alice = self.actor(0)
+        alice.choice = 0
+        alice.confidence = 1.0
+        alice.dialog_chance = 1.0
+        alice.preference = np.array([1.0, 0.0], float)
+
+        # define another leader
+        bob = self.actor(1)
+        bob.preference = np.array([0.0, 1.0], float)
 
         # set parameters of community channels
         for a, b, data in net.edges(data=True):
-            channel = Channel(a, b, data)
+            channel = Channel(self.actor(a), self.actor(b), data)
+            channel.dialog_matrix = define_dialogue_matrix(channel.actor1.confidence, channel.actor2.confidence)
             data['channel'] = channel
-
-            alice = channel.actor1
-            if alice == 0:
-                channel.a = 1.0
-                channel.D = define_dialogue_matrix(1.0, rg.uniform(low=0.2, high=0.6))
-            else:
-                channel.a = 1.0
-                channel.D = define_dialogue_matrix(rg.uniform(low=0.2, high=0.6), rg.uniform(low=0.2, high=0.6))
-
-        self._init_preference()
-
-    def _init_preference(self):
-        print("Specifying the experiment...")
-        # specify initial prefernce densities of community actors
-        for actor in self.actors():
-            if actor.node == 0:
-                actor.w = np.array([1.0, 0.0], float)
-            elif actor.node == 1:
-                actor.w = np.array([0.0, 1.0], float)
-            else:
-                actor.w = uncertainty(self.nvars)
+            channel.activation = channel.actor1.dialog_chance
 
     def actors(self) -> Generator[Actor, None, None]:
         for node, data in self._net.nodes(data=True):

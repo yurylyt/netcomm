@@ -32,17 +32,17 @@ class Protocol:
         # It def belongs here as it's actually a "poll", hence there's some probability of different answers
         # based on preference density.
         for actor in netcomm.actors():
-            hn = h(actor.w)
+            hn = h(actor.preference)
             if bernoulli_trial(np.power(hn, actor.rho)):
                 # actor 'n' disclaims a choice
                 actor.choice = DISCLAIMER
             else:
                 # actor 'n' chooses
-                actor.choice = np.random.choice(netcomm.nvars, p=actor.w)
+                actor.choice = np.random.choice(netcomm.nvars, p=actor.preference)
         # compute average preference density
         W = np.zeros(netcomm.nvars)
         for actor in netcomm.actors():
-            np.add(W, actor.w, W)
+            np.add(W, actor.preference, W)
         number_of_nodes = netcomm.size
         np.multiply(W, 1.0 / number_of_nodes, W)
         # compute polling result
