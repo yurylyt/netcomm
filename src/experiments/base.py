@@ -2,7 +2,7 @@ import time
 
 from src.models.community import Community
 from src.observer import SimpleObserver
-import src.session as session
+from src.session import Session
 
 
 class BaseExperiment:
@@ -24,7 +24,7 @@ class BaseExperiment:
             if istep % 100 == 0:
                 print("Done iterations: ", istep)
             start_time = time.time()
-            session.simulate(self._netcomm)
+            Session(self._netcomm).simulate()
             session_time = time.time()
             self._observer.observe_session(istep)
             observation_time = time.time()

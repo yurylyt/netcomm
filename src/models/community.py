@@ -63,10 +63,6 @@ class Community:
         assert self._channels_built, "Community.setup_channels() was not called"
         return self._net.edges[edge]['channel']
 
-    def clear_results(self):
-        for actor in self.actors():
-            actor.result_list[:] = []
-
     def observe(self) -> Observation:
         # polling simulation
 

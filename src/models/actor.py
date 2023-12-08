@@ -15,7 +15,6 @@ class Actor(HashWrapper):
     def __init__(self, node: int, data, nvars: int):
         super().__init__(data)
         self.node = node
-        self.result_list = []
         self._nvars = nvars
 
     @property
@@ -49,14 +48,6 @@ class Actor(HashWrapper):
     @dialog_chance.setter
     def dialog_chance(self, value):
         self._set('dialog_chance', value)
-
-    @property
-    def result_list(self):
-        return self._data['result_list']
-
-    @result_list.setter
-    def result_list(self, value):
-        self._data['result_list'] = value
 
     @property
     def preference(self) -> array:

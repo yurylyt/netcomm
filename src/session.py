@@ -2,28 +2,43 @@ from concurrent.futures import ThreadPoolExecutor, as_completed, ProcessPoolExec
 
 import numpy as np
 
+from src.models import Channel
 from src.models.community import Community
 
 
-def simulate(community: Community):
-    community.clear_results()
+class Session:
+    def __init__(self, community: Community):
+        self._community = community
+        self._results = [[] for _ in range(community.size)]
 
-    # simulate session dialogues
-    for channel in community.channels():
-        _activate_channel(channel)
+    def simulate(self):
 
-    # compute the previous session result for each community actor
-    _compute_results(community)
+        # simulate session dialogues
+        for channel in self._community.channels():
+            self._activate_channel(channel)
 
+        # compute the previous session result for each community actor
+        self._compute_results()
 
-def _activate_channel(channel):
-    if channel.is_active():
-        # determine actors participating as Alice and Bob in the current dialogue
-        alice, bob = channel.actor1, channel.actor2
-        # ------------------------------------------------------
-        wA, wB = _simulate_dialog(channel.dialog_matrix, alice.preference, bob.preference)
-        alice.result_list.append(wA)
-        bob.result_list.append(wB)
+    def _activate_channel(self, channel: Channel):
+        if channel.is_active():
+            # determine actors participating as Alice and Bob in the current dialogue
+            alice, bob = channel.actor1, channel.actor2
+            # ------------------------------------------------------
+            wA, wB = _simulate_dialog(channel.dialog_matrix, alice.preference, bob.preference)
+            self._results[alice.node].append(wA)
+            self._results[bob.node].append(wB)
+
+    def _compute_results(self):
+        for i, actor in enumerate(self._community.actors()):
+            result_list = self._results[i]
+            if result_list:
+                # actor 'n' participates at least in one dialogue
+                ndialogues = len(result_list)
+                w = np.zeros(self._community.nvars)
+                for wc in result_list:
+                    np.add(w, wc, w)
+                np.multiply(w, 1.0 / ndialogues, actor.preference)
 
 
 def _simulate_dialog(D, wA, wB):
@@ -38,16 +53,7 @@ def _simulate_dialog(D, wA, wB):
     return wA_result, wB_result
 
 
-def _compute_results(community):
-    for actor in community.actors():
-        result_list = actor.result_list
-        if result_list:
-            # actor 'n' participates at least in one dialogue
-            ndialogues = len(result_list)
-            w = np.zeros(community.nvars)
-            for wc in result_list:
-                np.add(w, wc, w)
-            np.multiply(w, 1.0 / ndialogues, actor.preference)
+
 
 
 
