@@ -5,7 +5,7 @@ DISCLAIMER = -1
 
 
 def bernoulli_trial(p):
-        return rnd.choice([True, False], p=[p, 1 - p])
+    return rnd.choice([True, False], p=[p, 1 - p])
 
 
 def uncertainty(m):

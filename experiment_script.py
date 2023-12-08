@@ -165,7 +165,7 @@ for n in net:
     else:
         net.nodes[n]['w'] = uncertainty(net.nvars)
 
-niter = 1000  # define number of iterations
+niter = 100  # define number of iterations
 
 # set up the experiment
 
@@ -187,7 +187,7 @@ running_time = time.time()
 # store the experiment outcomes
 # ----------------------------------------------------------
 print("Storing the experiment results...")
-out_file = open("protocol.dat", "w")
+out_file = open("protocol_reference.dat", "w")
 # out_file.write(str(net.nvars) + "\n")
 for item in protocol:
     for val in item[0]:
