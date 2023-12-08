@@ -6,9 +6,3 @@ if __name__ == '__main__':
         variants=2
     )
     experiment.run()
-
-
-
-
-
-
