@@ -1,5 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor, as_completed, ProcessPoolExecutor
-
 import numpy as np
 
 from src.models import Channel
