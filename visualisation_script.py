@@ -40,25 +40,31 @@ while True:
         "and 'e' requires to exit"
     )
     var = input("Input: ")
-    if var[0] in "12e" and \
-            all(map(lambda x : x in "123456789", var[1: ])):
+    if var[0] in "12e" and all(map(lambda x: x in "123456789", var[1:])):
         break
     else:
-        print(
-            "Error! "
-            "Repeat choosing a variant of the graphic"
-        )
+        print("Error! Repeat choosing a variant of the graphic")
 if var == "e":
     pass
 else:
+    """
+    First digit defines number of graphics: 1 or 2
+    (1): Second digit defines index in a protocol.dat row. There can be any number of digits
+        For nvars = 2:
+        1 - preference density for choice 0
+        2 - preference density for choice 1
+        3 - percent of disclaimers
+        4 - percent of choice 0 choices
+        5 - percent of choice 1 choices
+    (2): Second and Third digit - same as in (1), for each graph. Must be exactly 2 digits 
+    """
     var = list(map(int, var))
-    vars, ngraphs = var[1: ], len(data[0])
+    vars, ngraphs = var[1:], len(data[0])
+    print("ngraphs", ngraphs)
+    print("tdata", tdata)
     if var[0] == 1:
-        if len(vars) == 0 or \
-                any(map(lambda x : x > ngraphs, vars)):
-            print(
-                "Error! Data "
-                "variant refers to a non-existent data")
+        if len(vars) == 0 or any(map(lambda x: x > ngraphs, vars)):  # second number is a number of graphics.
+            print("Error! Data variant refers to a non-existent data")
             pass
         else:
             plt.rc('axes', prop_cycle=c_cms)
@@ -67,15 +73,10 @@ else:
             ax.set(xlim=(0, npoints), ylim=(-0.02, 1.02))
             ax.set_aspect(500)
             ax.grid()
-            ax.set_xlabel(
-                input_non_empty("Label of x-axis: ")
-            )
-            ax.set_ylabel(
-                input_non_empty("Label of y-axis: ")
-            )
+            ax.set_xlabel(input_non_empty("Label of x-axis: "))
+            ax.set_ylabel(input_non_empty("Label of y-axis: "))
             plt.tight_layout(pad=1)
             for v in vars:
-                xdata = []
                 xdata = [item[v - 1] for item in data]
                 ax.plot(tdata, xdata)
                 del xdata
@@ -83,11 +84,8 @@ else:
             # plt.text(850,0.6, "$W(1)$")
             plt.show()
     else:  # var[0] == 2
-        if len(vars) != 2 or \
-                any(map(lambda x : x > ngraphs, vars)):
-            print(
-                "Error! Data "
-                "variant refers to a non-existent data")
+        if len(vars) != 2 or any(map(lambda x: x > ngraphs, vars)):
+            print("Error! Data variant refers to a non-existent data")
             pass
         else:
             plt.rc('axes', prop_cycle=c_cms)
@@ -95,24 +93,15 @@ else:
             ax1 = fig.add_subplot(211)
             ax2 = fig.add_subplot(212)
             ax1.tick_params(axis='x',
-                top=False, bottom=False,
-                labelbottom=False)
+                            top=False, bottom=False,
+                            labelbottom=False)
             ax2.tick_params(axis='y',
-                left=False, right=True,
-                labelleft=False, labelright=True)
-            ax1.set_ylabel(
-                input_non_empty(
-                    "Label of y-axis for the top graph: "
-                )
-            )
-            ax2.set_xlabel(
-                input_non_empty("Label of x-axis: ")
-            )
-            ax2.set_ylabel(
-                input_non_empty(
-                    "Label of y-axis for the bottom graph: "
-                )
-            )
+                            left=False, right=True,
+                            labelleft=False, labelright=True)
+            ax1.set_ylabel(input_non_empty("Label of y-axis for the top graph: "))
+            ax2.set_xlabel(input_non_empty("Label of x-axis: "))
+            ax2.set_ylabel(input_non_empty("Label of y-axis for the bottom graph: "))
+
             for ax in fig.axes:
                 ax.set(xlim=(0, npoints), ylim=(-0.02, 1.02))
                 ax.set_aspect(500)
