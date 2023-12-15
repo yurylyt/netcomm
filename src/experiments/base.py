@@ -6,12 +6,13 @@ from src.session import Session
 
 
 class BaseExperiment:
-    def __init__(self, iterations, variants, observer=SimpleObserver):
+    def __init__(self, iterations, variants, observer=SimpleObserver()):
         self._iterations = iterations
         self._netcomm = Community(200, nvars=variants)
         self._configure_community()
         self._netcomm.build_channels()
-        self._observer = observer(self._netcomm)
+        self._observer = observer
+        self._observer.set_netcomm(self._netcomm)
 
     def _configure_community(self):
         pass
