@@ -34,7 +34,7 @@ class SimpleObserver(Observer):
 
     def observe_session(self, index):
         observation = self._netcomm.observe()
-        print(f"#{index}: {observation}")
+        # print(f"#{index}: {observation}")
         self._protocol.append(observation)
 
     def after(self):
@@ -66,6 +66,5 @@ class JsonObserver(SimpleObserver):
             json_str = json.dumps([to_dict(p) for p in self._protocol])
             json_str = "},\n".join(json_str.split("},"))  # each object on a new line for readability
             out_file.writelines(json_str)
-            print(json_str)
 
 

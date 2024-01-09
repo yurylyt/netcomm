@@ -180,7 +180,7 @@ for istep in range(niter):
     session_time = time.time()
     protocol.append(observation())
     observation_time = time.time()
-    print(f"Session: {session_time - start_time}ms, Observation: {observation_time - session_time}ms")
+    print(f"Session: {session_time - start_time}s, Observation: {observation_time - session_time}s")
 running_time = time.time()
 
 # ----------------------------------------------------------

@@ -31,10 +31,12 @@ def read_json(filename):
 
 
 def plot_json():
-    data = read_json("../data/2023-12-15_12:02_s200_i1000_c2.json")
+    data = read_json("../data/2023-12-15_15:57_s200_i1000_c3.json")
     plotter = Plotter(data, aspect=500)
-    plotter.add_plot(PreferencePlot("whatever", 0))
-    plotter.add_plot(DisclaimerPlot("it takes"))
+    plotter.add_plot(PreferencePlot("Preference 0", 0))
+    # plotter.add_plot(PreferencePlot("Preference 1", 1))
+    # plotter.add_plot(PreferencePlot("Preference 2", 2))
+    # plotter.add_plot(DisclaimerPlot("Disclaims"))
     plotter.plot()
 
 

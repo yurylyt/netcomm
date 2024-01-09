@@ -8,3 +8,8 @@ class SingleLeaderExperiment(BaseExperiment):
         alice.confidence = 1.0
         alice.dialog_chance = 1.0
         alice.strong_preference(0)
+        alice = self._netcomm.actor(1)
+        alice.confidence = 1.0
+        alice.dialog_chance = 1.0
+        alice.strong_preference(0)
+

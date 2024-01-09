@@ -23,16 +23,16 @@ class BaseExperiment:
         print("Running experiments, iterations count: ", self._iterations)
         for istep in range(self._iterations):
             if istep % 100 == 0:
-                print("Done iterations: ", istep)
+                print(f"Done {istep} iterations in {int(time.time() - start_time_total)}s")
             start_time = time.time()
             Session(self._netcomm).simulate()
             session_time = time.time()
             self._observer.observe_session(istep)
             observation_time = time.time()
-            print(f"Session: {session_time - start_time}ms; Observation: {observation_time - session_time}")
+            # print(f"Session: {session_time - start_time}ms; Observation: {observation_time - session_time}")
         running_time = time.time()
 
         self._observer.after()
 
-        print(f"Running time: {running_time - start_time_total}ms")
+        print(f"Running time: {running_time - start_time_total}s")
 
