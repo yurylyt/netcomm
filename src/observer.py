@@ -1,39 +1,39 @@
 from datetime import datetime
 
-from src.models.community import Community
 import json
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+
+from src.db.schema import Base, Experiment, Iteration
 
 
 class Observer:
-    def __init__(self):
-        self._netcomm = None
+    def __init__(self, experiment):
+        self._experiment = experiment
 
-    def set_netcomm(self, netcomm):
-        self._netcomm = netcomm
-
-    def before(self):
+    def before(self, observation):
         pass
 
-    def observe_session(self, index):
+    def observe_session(self, index, observation):
         pass
 
     def after(self):
         pass
 
-
+# deprecated
 class SimpleObserver(Observer):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, experiment):
+        super().__init__(experiment)
         self._protocol = []
 
     def _filename(self):
         return "protocol.dat"
 
-    def before(self):
-        self._protocol.append(self._netcomm.observe())
+    def before(self, observation):
+        self._protocol.append(observation)
 
-    def observe_session(self, index):
-        observation = self._netcomm.observe()
+    def observe_session(self, index, observation):
         # print(f"#{index}: {observation}")
         self._protocol.append(observation)
 
@@ -51,14 +51,11 @@ def to_dict(observation):
     }
 
 
+# deprecated
 class JsonObserver(SimpleObserver):
-    def __init__(self, niter):
-        super().__init__()
-        self._niter = niter
-
     def _filename(self):
         datestr = datetime.now().strftime("%Y-%m-%d_%H:%M")
-        return f"data/{datestr}_s{self._netcomm.size}_i{self._niter}_c{self._netcomm.nvars}.json"
+        return f"data/{datestr}_s{self._experiment.netcomm.size}_i{self._experiment.iterations}_c{self._experiment.netcomm.nvars}.json"
 
     def after(self):
         print("Storing results as json")
@@ -68,3 +65,33 @@ class JsonObserver(SimpleObserver):
             out_file.writelines(json_str)
 
 
+class SQLObserver(Observer):
+
+    def __init__(self, experiment):
+        super().__init__(experiment)
+        engine = create_engine("sqlite:///experiments.sqlite", echo=False)
+        Base.metadata.create_all(engine)
+        exp_dto = Experiment(
+            date=datetime.now(),
+            status="init",
+            community_size=experiment.netcomm.size,
+            iterations_count=experiment.iterations,
+            choices=experiment.netcomm.nvars
+        )
+        self._session = Session(engine)
+        self._session.add(exp_dto)
+        self._session.commit()
+        self._exp_dto = exp_dto
+
+    def before(self, observation):
+        self._exp_dto.status = 'running'
+        self.observe_session(0, observation)
+
+    def observe_session(self, index, observation):
+        self._exp_dto.iterations.append(Iteration(index + 1, observation))
+        self._session.commit()
+
+    def after(self):
+        self._exp_dto.status = 'done'
+        self._session.commit()
+        self._session.close()

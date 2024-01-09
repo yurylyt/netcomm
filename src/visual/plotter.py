@@ -27,6 +27,7 @@ class PreferencePlot(BasePlot):
     def data_point(self, item):
         return item.preference[self.choice]
 
+
 @dataclass
 class DisclaimerPlot(BasePlot):
     def data_point(self, item):
@@ -52,7 +53,6 @@ class Plotter:
 
     def add_plot(self, plot: BasePlot):
         self._plots.append(plot)
-
 
     def plot(self):
         c_cms = self._build_cycler()
@@ -80,6 +80,7 @@ class Plotter:
 
         plt.tight_layout(pad=1, h_pad=-0.6)
         plt.show()
+
 
     def _build_cycler(self):
         color_c = cycler('color', ['k'])

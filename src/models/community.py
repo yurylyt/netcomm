@@ -63,7 +63,7 @@ class Community:
         assert self._channels_built, "Community.setup_channels() was not called"
         return self._net.edges[edge]['channel']
 
-    def observe(self) -> Observation:
+    def poll(self) -> Observation:
         # polling simulation
 
         # It def belongs here as it's actually a "poll", hence there's some probability of different answers
