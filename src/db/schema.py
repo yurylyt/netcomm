@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class Experiment(Base):
+class ExperimentDTO(Base):
     __tablename__ = "experiment"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -21,6 +21,7 @@ class Experiment(Base):
     community_size: Mapped[int]
     iterations_count: Mapped[int]
     choices: Mapped[int]
+    run_time: Mapped[Optional[int]]
     comment: Mapped[Optional[str]]
     iterations: Mapped[List["Iteration"]] = relationship(back_populates="experiment", cascade="all, delete-orphan")
 
@@ -45,5 +46,5 @@ class Iteration(Base):
     disclaimed: Mapped[float]
     chose: Mapped[str]
     experiment_id: Mapped[int] = mapped_column(ForeignKey("experiment.id"))
-    experiment: Mapped["Experiment"] = relationship(back_populates="iterations")
+    experiment: Mapped["ExperimentDTO"] = relationship(back_populates="iterations")
 

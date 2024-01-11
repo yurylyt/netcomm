@@ -2,17 +2,16 @@ import array
 import numpy as np
 
 from src.models import HashWrapper
-from src.utils import bernoulli, preference
+from src.utils import preference
 
 
 class Actor(HashWrapper):
     """
     Decorator over a networkx graph node
     """
-    def __init__(self, node: int, data, nvars: int):
+    def __init__(self, node: int, data):
         super().__init__(data)
         self.node = node
-        self._nvars = nvars
 
     @property
     def rho(self):
@@ -23,14 +22,14 @@ class Actor(HashWrapper):
         self._data['rho'] = value
 
     @property
-    def confidence(self):
+    def confidence_level(self):
         """
         Probability that actor will preserve their choice.
         """
         return self._get('confidence')
 
-    @confidence.setter
-    def confidence(self, value: float):
+    @confidence_level.setter
+    def confidence_level(self, value: float):
         self._set('confidence', value)
 
     @property
@@ -58,9 +57,9 @@ class Actor(HashWrapper):
     def preference(self, value: array):
         self._set('w', value)
 
-    def uncertain_preference(self):
-        self.preference = preference.uncertainty(self._nvars)
+    def is_uncertain(self, nvars):
+        self.preference = preference.uncertainty(nvars)
 
-    def strong_preference(self, choice):
-        self.preference = np.zeros(self._nvars)
+    def chooses(self, choice):
+        self.preference = np.zeros(len(self.preference))
         self.preference[choice] = 1.0
