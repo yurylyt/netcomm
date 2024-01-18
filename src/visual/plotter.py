@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Callable
 
 import matplotlib.pyplot as plt
 from cycler import cycler
@@ -7,47 +8,32 @@ from src.models import Observation
 from src.utils.data_reader import DataReader
 
 
+def preferences(ylabel, choice_idx):
+    return _SubPlot(ylabel, lambda observation: observation.preference[choice_idx])
+
+
+def disclaimers(ylabel):
+    return _SubPlot(ylabel, lambda observation: observation.disclaimed)
+
+
+def choices(ylabel, choice_idx):
+    return _SubPlot(ylabel, lambda observation: observation.chose[choice_idx])
+
+
 @dataclass
-class BasePlot:
+class _SubPlot:
     ylabel: str
-
-    def data_point(self, item: Observation):
-        pass
-
-
-@dataclass
-class PreferencePlot(BasePlot):
-    choice: int
-
-    def data_point(self, item: Observation):
-        return item.preference[self.choice]
-
-
-@dataclass
-class DisclaimerPlot(BasePlot):
-    def data_point(self, item: Observation):
-        return item.disclaimed
-
-
-@dataclass
-class ChoicePlot(BasePlot):
-    choice: int
-
-    def data_point(self, item: Observation):
-        return item.chose[self.choice]
+    data_point: Callable[[Observation], float]
 
 
 class Plotter:
-    def __init__(self, data_reader: DataReader, xlabel="x", aspect=500):
+
+    def __init__(self, data_reader: DataReader, aspect=500, xlabel="x"):
         self._data_reader = data_reader
-        self._plots = []
+        self._aspect = aspect  # define aspect based on data size?
         self._xlabel = xlabel
-        self._aspect = aspect
 
-    def add_plot(self, plot: BasePlot):
-        self._plots.append(plot)
-
-    def plot(self):
+    def plot(self, *plots):
         c_cms = self._build_cycler()
         plt.rc('axes', prop_cycle=c_cms)
         fig = plt.figure(figsize=(5, 4.5))
@@ -56,8 +42,8 @@ class Plotter:
         npoints = len(data)
         tdata = [ic for ic in range(npoints)]  # data for abscissa axis
 
-        numplots = len(self._plots)
-        for i, plot in enumerate(self._plots):
+        numplots = len(plots)
+        for i, plot in enumerate(plots):
             ax = fig.add_subplot(numplots, 1, i + 1)
             # hide x-axis for all by default
             ax.tick_params(axis='x', top=False, bottom=False, labelbottom=False)

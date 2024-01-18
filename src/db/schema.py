@@ -33,7 +33,7 @@ class Iteration(Base):
         super().__init__(
             idx=idx,
             disclaimed=observation.disclaimed,
-            preference=json.dumps(observation.preference.tolist()),
+            preference=json.dumps(observation.preferences.tolist()),
             chose=json.dumps(observation.chose.tolist())
         )
 

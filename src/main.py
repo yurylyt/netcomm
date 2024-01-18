@@ -22,16 +22,17 @@ if __name__ == '__main__':
     print("Experiment id:", data_id)
 
     data_reader = SqlReader("sqlite:///experiments.sqlite", data_id)
-    prefPlotter = Plotter(data_reader, aspect=500)
-    prefPlotter.add_plot(PreferencePlot("Preference 0", 0))
-    prefPlotter.add_plot(PreferencePlot("Preference 1", 1))
-    prefPlotter.plot()
+    plotter = Plotter(data_reader)
 
-    disclaimers = Plotter(data_reader)
-    disclaimers.add_plot(DisclaimerPlot("Disclaimers"))
-    disclaimers.plot()
+    plotter.plot(
+        preferences("Preference 0", 0),
+        preferences("Preference 1", 1)
+    )
 
-    choices = Plotter(data_reader)
-    choices.add_plot(ChoicePlot("Choice 1", 0))
-    choices.add_plot(ChoicePlot("Choice 2", 1))
-    choices.plot()
+    plotter.plot(disclaimers("Disclaimers"))
+
+    plotter.plot(
+        choices("Choice 1", 0),
+        choices("Choice 2", 1),
+    )
+

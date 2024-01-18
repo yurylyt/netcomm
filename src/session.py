@@ -36,7 +36,7 @@ class Session:
                 w = np.zeros(self._community.nvars)
                 for wc in result_list:
                     np.add(w, wc, w)
-                np.multiply(w, 1.0 / ndialogues, actor.preference)
+                np.multiply(w, 1.0 / ndialogues, actor.preferences)
 
 
     def _simulate_dialog(self, D, wA, wB):

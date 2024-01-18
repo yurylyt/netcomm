@@ -52,7 +52,7 @@ class SimpleScribe(Scribe):
 
 def to_dict(observation):
     return {
-        "preference": observation.preference.tolist(),
+        "preference": observation.preferences.tolist(),
         "disclaimed": observation.disclaimed,
         "chose": observation.chose.tolist()
     }
