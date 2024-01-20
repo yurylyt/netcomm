@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from src.db.schema import Base, ExperimentDTO, Iteration
 
 
-class Scribe:
+class Observer:
     def __init__(self, experiment):
         self._experiment = experiment
 
@@ -29,7 +29,7 @@ class Scribe:
 
 
 # deprecated
-class SimpleScribe(Scribe):
+class SimpleObserver(Observer):
     def __init__(self, experiment):
         super().__init__(experiment)
         self._protocol = []
@@ -59,7 +59,7 @@ def to_dict(observation):
 
 
 # deprecated
-class JsonScribe(SimpleScribe):
+class JsonObserver(SimpleObserver):
     def _filename(self):
         datestr = datetime.now().strftime("%Y-%m-%d_%H:%M")
         return f"data/{datestr}_s{self._experiment.netcomm.size}_i{self._experiment.iterations}_c{self._experiment.netcomm.nvars}.json"
@@ -75,9 +75,9 @@ class JsonScribe(SimpleScribe):
         return self._filename()
 
 
-class SQLScribe(Scribe):
+class SQLObserver(Observer):
 
-    def __init__(self, experiment, experiment_comment="", sqlite_url="sqlite:///experiments.sqlite"):
+    def __init__(self, experiment, sqlite_url="sqlite:///experiments.sqlite"):
         super().__init__(experiment)
         engine = create_engine(sqlite_url, echo=False)
         Base.metadata.create_all(engine)
@@ -87,7 +87,7 @@ class SQLScribe(Scribe):
             community_size=experiment.netcomm.size,
             iterations_count=experiment.iterations,
             choices=experiment.netcomm.nvars,
-            comment=experiment_comment
+            comment=experiment.name
         )
         self._session = Session(engine)
         self._session.add(exp_dto)

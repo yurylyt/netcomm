@@ -53,6 +53,13 @@ class Community:
         for a, b, data in self._net.edges(data=True):
             yield data['channel']
 
+    def active_channels(self) -> Generator[Channel, None, None]:
+        """
+        Return a subset of channels based on bernoulli trial for each one.
+        It means that each invocation of this method will yield different results
+        """
+        return (ch for ch in self.channels() if ch.is_active())
+
     def channel(self, edge):
         assert self._channels_built, "Community.setup_channels() was not called"
         return self._net.edges[edge]['channel']

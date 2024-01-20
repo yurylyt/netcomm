@@ -1,4 +1,4 @@
-
+import numpy as np
 
 from src.models import HashWrapper, Actor
 from src.utils import bernoulli
@@ -13,6 +13,19 @@ class Channel(HashWrapper):
         self.actor1 = actor1
         self.actor2 = actor2
         # TODO: move dialog matrix definition here
+
+    def activate(self):
+        nvars = len(self.actor1.preference)
+        wA = self.actor1.preference
+        wB = self.actor2.preference
+        D = self.dialog_matrix
+        wB_result = np.zeros(nvars)
+        wA_result = np.zeros(nvars)
+        # TODO: replace with matrix multiplication
+        for v in range(nvars):
+            wA_result[v] = D[0, 0] * wA[v] + D[0, 1] * wB[v]
+            wB_result[v] = D[1, 0] * wA[v] + D[1, 1] * wB[v]
+        return wA_result, wB_result
 
     def is_active(self):
         return bernoulli.trial(self.activation)

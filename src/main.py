@@ -1,12 +1,12 @@
-from src.experiments.experiment import Experiment
-from src.scribe import SQLScribe
+from src.experiment_runner import run_experiment
+from src.models import Experiment
+
+from src.observer import SQLObserver
 from src.utils.data_reader import SqlReader
 from src.visual.plotter import *
 
 if __name__ == '__main__':
-    experiment = Experiment(iterations=1000, variants=2)
-    scribe = SQLScribe(experiment, "Two confident leaders choose 0")
-
+    experiment = Experiment("Two confident leaders choose 0", iterations=100, variants=2)
     # define a leader
     alice = experiment.actor(0)
     alice.confidence_level = 1.0
@@ -18,11 +18,12 @@ if __name__ == '__main__':
     bob.dialog_chance = 1.0
     bob.chooses(0)
 
-    data_id = experiment.run(scribe)
+    data_id = run_experiment(experiment, SQLObserver(experiment))
     print("Experiment id:", data_id)
 
+    # plot experiment results
     data_reader = SqlReader("sqlite:///experiments.sqlite", data_id)
-    plotter = Plotter(data_reader)
+    plotter = Plotter(data_reader, aspect=50)
 
     plotter.plot(
         preferences("Preference 0", 0),
