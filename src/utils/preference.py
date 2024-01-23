@@ -8,6 +8,8 @@ def uncertainty(m):
 def normalized_entropy(w):
     """
     the normalised entropy of distribution 'w'
+    entropy is the highest (1.0 normalized) when every choice can occur with the same probability (aka uncertainty)
+    it is the lowest (0.0) when probability is 1.0 for one of the choices
     """
     h = float(0)
     for p in w:

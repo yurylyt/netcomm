@@ -41,6 +41,11 @@ def _poll_community(experiment) -> Observation:
     choices = np.zeros(experiment.nvars)
 
     for actor in netcomm.actors():
+        # normalized entropy indicates how different values are in actor.preference.
+        # Similar/close values produce higher entropy value.
+        # The higher value is, the higher chances for the disclaimer.
+        # if actor's uncertain (i.e. preference values are the same),
+        # then entropy value is 1.0, meaning it will disclaim for sure
         hn = preference.normalized_entropy(actor.preference)
         if bernoulli.trial(np.power(hn, actor.rho)):
             disclaimers += 1  # actor 'n' disclaims a choice
