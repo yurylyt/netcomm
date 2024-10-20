@@ -1,10 +1,6 @@
 # netcomm
-This repository consists of the following files
-
- 1. utils.py comtaining some useful functions
- 2. experiment_script.py containing a template of an experiment description
- 3. visualisation_script.py containing a template of plotting procedures
-
+- Entry point: `src/main.py`
+- Matcha.io on decisiveness: https://www.mathcha.io/editor/zXXjYUMVfGXS9MH4LrNJGu3pd1lJClz5qDvcZPqnnZ
 
 
 
