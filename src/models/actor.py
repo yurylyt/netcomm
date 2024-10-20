@@ -2,7 +2,7 @@ import array
 import numpy as np
 
 from src.models import HashWrapper
-from src.utils import preference
+from src.utils import preference, bernoulli
 
 
 class Actor(HashWrapper):
@@ -14,12 +14,12 @@ class Actor(HashWrapper):
         self.node = node
 
     @property
-    def rho(self):
-        return self._data['rho']
+    def decisiveness(self):
+        return self._data['decisiveness']
 
-    @rho.setter
-    def rho(self, value):
-        self._data['rho'] = value
+    @decisiveness.setter
+    def decisiveness(self, value):
+        self._data['decisiveness'] = value
 
     @property
     def confidence_level(self):
@@ -63,3 +63,22 @@ class Actor(HashWrapper):
     def chooses(self, choice):
         self.preference = np.zeros(len(self.preference))
         self.preference[choice] = 1.0
+
+    def make_decision(self):
+        # normalized entropy indicates how different values are in actor.preference.
+        # Similar/close values produce higher entropy value.
+        # The higher value is, the higher chances for the disclaimer.
+        # if actor's uncertain (i.e. preference values are the same),
+        # then entropy value is 1.0, meaning it will disclaim for sure
+        hn = preference.normalized_entropy(self.preference)
+
+        # rho seems to be used to make the curve steeper for entropy,
+        # making it very close to 0 for almost half of lower values
+        # And then rising very fast
+        rho = np.exp(self.decisiveness)
+        if bernoulli.trial(np.power(hn, rho)):
+            return preference.DISCLAIMER
+
+        return np.random.choice(len(self.preference), p=self.preference)
+
+

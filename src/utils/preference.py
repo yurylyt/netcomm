@@ -1,5 +1,7 @@
 import numpy as np
 
+DISCLAIMER = -1
+
 
 def uncertainty(m):
     return np.array(m * [1.0 / m], float)
