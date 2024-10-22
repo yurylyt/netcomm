@@ -3,8 +3,8 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from src.db.schema import ExperimentDTO
-from src.models import Observation
+from db.schema import ExperimentDTO
+from models import Observation
 
 
 class DataReader:

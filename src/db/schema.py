@@ -5,7 +5,7 @@ from typing import Optional, List
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-from src.models import Observation
+from models import Observation
 
 
 class Base(DeclarativeBase):

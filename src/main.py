@@ -1,9 +1,9 @@
-from src.experiment_runner import run_experiment
-from src.models import Experiment
+from experiment_runner import run_experiment
+from models import Experiment
 
-from src.observer import SQLObserver
-from src.utils.data_reader import SqlReader
-from src.visual.plotter import *
+from observer import SQLObserver
+from utils.data_reader import SqlReader
+from visual.plotter import *
 
 if __name__ == '__main__':
     experiment = Experiment("Confident leader, constant high decisiveness",

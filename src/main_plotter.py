@@ -1,5 +1,5 @@
-from src.utils.data_reader import SqlReader
-from src.visual.plotter import *
+from utils.data_reader import SqlReader
+from visual.plotter import *
 
 if __name__ == '__main__':
     data_reader = SqlReader("sqlite:///../experiments.sqlite", 18)

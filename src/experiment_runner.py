@@ -2,9 +2,9 @@ import time
 
 import numpy as np
 
-from src.models import Observation
-from src.models.community import Community
-from src.utils import preference, bernoulli
+from models import Observation
+from models.community import Community
+from utils import preference, bernoulli
 
 
 def run_experiment(experiment, observer):

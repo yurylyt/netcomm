@@ -4,8 +4,8 @@ from typing import Callable
 import matplotlib.pyplot as plt
 from cycler import cycler
 
-from src.models import Observation
-from src.utils.data_reader import DataReader
+from models import Observation
+from utils.data_reader import DataReader
 
 
 def preferences(ylabel, choice_idx):

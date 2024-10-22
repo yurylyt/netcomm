@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from src.db.schema import Base, ExperimentDTO
+from db.schema import Base, ExperimentDTO
 
 engine = create_engine("sqlite:///../../experiments.sqlite", echo=True)
 Base.metadata.create_all(engine)

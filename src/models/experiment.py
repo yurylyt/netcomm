@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.models.community import Community
-from src.models.actor import Actor
+from models.community import Community
+from models.actor import Actor
 
 
 class Experiment:

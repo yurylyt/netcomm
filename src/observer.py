@@ -5,7 +5,7 @@ import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from src.db.schema import Base, ExperimentDTO, Iteration
+from db.schema import Base, ExperimentDTO, Iteration
 
 
 class Observer:

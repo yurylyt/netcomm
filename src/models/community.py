@@ -4,7 +4,7 @@ import networkx as nx
 
 import numpy as np
 
-from src.models import Actor, Channel
+from models import Actor, Channel
 
 
 class Community:

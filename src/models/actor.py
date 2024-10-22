@@ -1,8 +1,8 @@
 import array
 import numpy as np
 
-from src.models import HashWrapper
-from src.utils import preference, bernoulli
+from models import HashWrapper
+from utils import preference, bernoulli
 
 
 class Actor(HashWrapper):

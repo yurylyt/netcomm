@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.models import HashWrapper, Actor
-from src.utils import bernoulli
+from models import HashWrapper, Actor
+from utils import bernoulli
 
 
 class Channel(HashWrapper):
