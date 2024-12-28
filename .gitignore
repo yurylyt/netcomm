@@ -4,3 +4,4 @@ venv
 __pycache__
 data
 experiments.sqlite
+.ipynb_checkpoints
